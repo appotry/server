@@ -103,7 +103,7 @@ class ContactsStore implements IContactsStore {
 	}
 
 	/**
-	 * Filters the contacts. Applies 3 filters:
+	 * Filters the contacts. Applied filters:
 	 *  1. filter the current user
 	 *  2. if the `shareapi_allow_share_dialog_user_enumeration` config option is
 	 * enabled it will filter all local users
@@ -172,13 +172,13 @@ class ContactsStore implements IContactsStore {
 			}
 
 			if ($ownGroupsOnly && $entry->getProperty('isLocalSystemBook') === true) {
-				$uid = $this->userManager->get($entry->getProperty('UID'));
+				$user = $this->userManager->get($entry->getProperty('UID'));
 
-				if ($uid === null) {
+				if ($user === null) {
 					return false;
 				}
 
-				$contactGroups = $this->groupManager->getUserGroupIds($uid);
+				$contactGroups = $this->groupManager->getUserGroupIds($user);
 				if (count(array_intersect($contactGroups, $selfGroups)) === 0) {
 					// no groups in common, so shouldn't see the contact
 					return false;
