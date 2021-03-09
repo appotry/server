@@ -35,6 +35,7 @@ use OCA\Comments\JSSettingsHelper;
 use OCA\Comments\Listener\CommentsEntityEventListener;
 use OCA\Comments\Listener\LoadAdditionalScripts;
 use OCA\Comments\Listener\LoadSidebarScripts;
+use OCA\Comments\MaxAutoCompleteResultsInitialState;
 use OCA\Comments\Notification\Notifier;
 use OCA\Comments\Search\LegacyProvider;
 use OCA\Comments\Search\CommentsSearchProvider;
@@ -75,14 +76,13 @@ class Application extends App implements IBootstrap {
 			CommentsEntityEventListener::class
 		);
 		$context->registerSearchProvider(CommentsSearchProvider::class);
+
+		$context->registerInitialStateProvider(MaxAutoCompleteResultsInitialState::class);
 	}
 
 	public function boot(IBootContext $context): void {
 		$context->injectFn(Closure::fromCallable([$this, 'registerNotifier']));
 		$context->injectFn(Closure::fromCallable([$this, 'registerCommentsEventHandler']));
-
-		$jsSettingsHelper = new JSSettingsHelper($context->getAppContainer()->get(IConfig::class));
-		Util::connectHook('\OCP\Config', 'js', $jsSettingsHelper, 'extend');
 
 		$context->getServerContainer()->get(ISearch::class)->registerProvider(LegacyProvider::class, ['apps' => ['files']]);
 	}
