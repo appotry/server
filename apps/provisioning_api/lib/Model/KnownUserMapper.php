@@ -46,7 +46,7 @@ class KnownUserMapper extends QBMapper {
 	public function deleteKnownTo(string $knownTo): int {
 		$query = $this->db->getQueryBuilder();
 		$query->delete($this->getTableName())
-			->where($query->expr()->eq('known_to', $query->createNamedParameter($knownTo, IQueryBuilder::PARAM_STR)));
+			->where($query->expr()->eq('known_to', $query->createNamedParameter($knownTo)));
 
 		return (int) $query->execute();
 	}
@@ -58,9 +58,22 @@ class KnownUserMapper extends QBMapper {
 	public function deleteKnownUser(string $knownUser): int {
 		$query = $this->db->getQueryBuilder();
 		$query->delete($this->getTableName())
-			->where($query->expr()->eq('known_user', $query->createNamedParameter($knownUser, IQueryBuilder::PARAM_STR)));
+			->where($query->expr()->eq('known_user', $query->createNamedParameter($knownUser)));
 
 		return (int) $query->execute();
+	}
+
+	/**
+	 * @param string $knownTo
+	 * @return KnownUser[]
+	 */
+	public function getKnownTo(string $knownTo): array {
+		$query = $this->db->getQueryBuilder();
+		$query->select('*')
+			->from($this->getTableName())
+			->where($query->expr()->eq('known_to', $query->createNamedParameter($knownTo)));
+
+		return $this->findEntities($query);
 	}
 
 	public function createKnownUserFromRow(array $row): KnownUser {
